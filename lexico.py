@@ -4,14 +4,16 @@ import re
 erro = []
 tokens = []
 
+''' OBS: dfdsfdsfsd" eh um erro lexico? e "fdsfdsfdsfsd?'''
+
 keywords = ['ATEH','BIT','DE','ENQUANTO','ESCREVA','FIM','FUNCAO','INICIO',
 			'INTEIRO','LEIA','NULO','PARA','PARE','REAL','RECEBA','SE','SENAO','VAR',
 			'VET','.',':',';','<','+','*','/','-','**','%','[',']','>','<=','>=','=',
 			'<>','"','&','|','!','(',')','<-']
 
+separadores = ['+','-','*','/','<','>','%','&','|',';','=',':',' ','\t']
 
-
-linha,finish,flag_id,flag_num = 1,0,0,0
+linha,finish = 1,0
 
 l = '[a-zA-Z]'
 n = '[0-9]'
@@ -45,6 +47,15 @@ def checa_tam_num():
 		flag_num = 0
 		tam_max_num = 0
 
+def checa_tam_const():
+	global flag_const,tam_max_const
+
+	if tam_max_const > 250:
+		gera_msg_erro(linha,coluna)
+		flag_const = 0
+		tam_max_const = 0
+
+
 
 
 while True:
@@ -56,7 +67,7 @@ while True:
 
 		line = sys.stdin.readline()
 
-		tam_max_id,tam_max_num = 0,0	#tamango max do id comeca como 0
+		tam_max_id,tam_max_num,tam_max_const,flag_id,flag_num,flag_const = 0,0,0,0,0,0	#tamango max do id comeca como 0
 		buff = ''	#buffer para guardar token atual
 
 		for coluna,char in enumerate(line):	
@@ -64,6 +75,11 @@ while True:
 			if ord(char) in range(32,127) or ord(char) in [9,10]:	#caracteres imprimiveis
 
 				if eh_letra(char):	#trata letras
+
+					if flag_const == 1: #faz parte de constante string
+						tam_max_const = tam_max_const + 1
+						checa_tam_const()
+						continue
 
 					if flag_num == 1:
 						gera_msg_erro(linha,coluna)
@@ -79,6 +95,11 @@ while True:
 
 				elif eh_numero(char):	#trata numeros
 
+					if flag_const == 1: #faz parte de constante string
+						tam_max_const = tam_max_const + 1
+						checa_tam_const()
+						continue
+
 					if flag_id == 0:
 
 						if flag_num == 0:
@@ -93,8 +114,30 @@ while True:
 						tam_max_id = tam_max_id + 1
 						checa_tam_id()
 
-				else: #trata outros caracteres (lembrar de tratar a ',' para numeros)
-					pass	
+				else:
+
+					if char == '"':	#provavel constante string
+
+						if flag_id == 1:	# eu estava lendo um id
+							gera_msg_erro(linha,coluna)
+							flag_id = 0
+							continue
+
+						if flag_num == 1:
+							gera_msg_erro(linha,coluna)
+							flag_num = 0
+							continue
+
+						if flag_const == 0:	#comeco de constante string
+							flag_const = 1
+							tam_max_const = tam_max_const + 1
+
+						elif flag_const == 1:
+							flag_const = 0
+
+
+
+						
 			else:
 				print('ARQUIVO INVALIDO')
 				finish = 1
