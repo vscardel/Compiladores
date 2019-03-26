@@ -168,8 +168,13 @@ if buff:
 			listaTokens.append(('EQUAL','='))
 			state = 0
 		elif state == 17:
-			listaTokens.append(('EQUAL','='))
-			state = 0
+			char = getNextChar()
+			if char == '=':
+				listaTokens.append(('GE','>='))
+				state = 0
+			else:
+				listaTokens.append(('GR','>'))
+				state = 0
 		elif state == 18: #LESS
 			char = getNextChar()
 			if char == '-':
@@ -211,6 +216,38 @@ if buff:
 				listaTokens.append(('ID',identifier))
 				identifier = ''
 				state = 22
-		
+			else:
+				if char == '+':
+					identifier = identifier[:-1]
+					listaTokens.append(('ID',identifier))
+					identifier = ''
+					state = 4
+				elif char == '-':
+					identifier = identifier[:-1]
+					listaTokens.append(('ID',identifier))
+					identifier = ''
+					state = 5
+				elif char == '*':
+					identifier = identifier[:-1]
+					listaTokens.append(('ID',identifier))
+					identifier = ''
+					state = 6
+				elif char == '/':
+					identifier = identifier[:-1]
+					listaTokens.append(('ID',identifier))
+					identifier = ''
+					state = 7
+				elif char == '<':
+					identifier = identifier[:-1]
+					listaTokens.append(('ID',identifier))
+					identifier = ''
+					state = 18
+				else:
+					retract()
+					print('linha','coluna')
+					identifier = ''
+					state = 0
+		elif state == 21:
+			pass
 else:
 	print('ARQUIVO INVALIDO')
