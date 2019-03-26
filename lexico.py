@@ -2,6 +2,8 @@ import re
 import sys
 
 InputPointer = -1
+literal = ''
+identifier = ''
 
 n = '[0-9]'
 l = '[a-zA-Z]'
@@ -71,11 +73,11 @@ if buff:
 			elif char == '+':
 				state = 4
 			elif char == '-':
-				state = 5:
+				state = 5
 			elif char == '*':
 				state = 6
 			elif char == '/':
-				state = 7:
+				state = 7
 			elif char == '%':
 				state = 8
 			elif char == '(':
@@ -102,36 +104,113 @@ if buff:
 				state = 19
 			elif letra.match(char):
 				state = 20
+				identifier = identifier + char
 			elif numero.match(char):
 				state = 21
 			elif ord(char) in [9,10,32]:
 				state = 22
+			else:
+				print('linha','coluna')
 		elif state == 1:
-			listaTokens.append('PONT','.')
+			listaTokens.append(('PONT','.'))
 			state = 0
 		elif state == 2:
-			listaTokens.append('PONT_V',';')
+			listaTokens.append(('PONT_V',';'))
 			state = 0
 		elif state == 3:
-			listaTokens.append('D_PONT',':')
+			listaTokens.append(('D_PONT',':'))
 			state = 0
 		elif state == 4:
-			listaTokens.append('ADIC','+')
+			listaTokens.append(('ADIC','+'))
 			state = 0
 		elif state == 5:
-			listaTokens.append('SUB','-')
+			listaTokens.append(('SUB','-'))
 			state = 0
 		elif state == 6:
 			char = getNextChar()
 			if char == '*':
-				listaTokens.append('POT','**')
+				listaTokens.append(('POT','**'))
 				state = 0
 			elif char in [9,10,32]:
-				listaTokens.append('MUL','*')
+				listaTokens.append(('MUL','*'))
 				state = 22
 			else:
+				listaTokens.append(('MUL','*'))
+				state = 0
+		elif state == 7:
+			listaTokens.append(('DIV','/'))
+			state = 0
+		elif state == 8:
+			listaTokens.append(('MOD','%'))
+			state = 0
+		elif state == 9:
+			listaTokens.append(('LPAR','('))
+			state = 0
+		elif state == 10:
+			listaTokens.append(('RPAR',')'))
+			state = 0
+		elif state == 11:
+			listaTokens.append(('RBRAK','['))
+			state = 0
+		elif state == 12:
+			listaTokens.append(('LBRAK',']'))
+			state = 0
+		elif state == 13:
+			listaTokens.append(('AND','&'))
+			state = 0
+		elif state == 14:
+			listaTokens.append(('OR','|'))
+			state = 0
+		elif state == 15:
+			listaTokens.append(('NOT','!'))
+			state = 0
+		elif state == 16:
+			listaTokens.append(('EQUAL','='))
+			state = 0
+		elif state == 17:
+			listaTokens.append(('EQUAL','='))
+			state = 0
+		elif state == 18: #LESS
+			char = getNextChar()
+			if char == '-':
+				listaTokens.append(('ATT','<-'))
+				state = 0
+			elif char == '=':
+				listaTokens.append(('LE','<='))
+				state = 0
+			elif char == '>':
+				listaTokens.append('DIFF','<>')
+				state = 0
+			elif char in [9,10,32]:
+				state = 22
+			else:
+				listaTokens.append('LT','<')
+				state = 0
+		elif state == 19:
+			char = getNextChar()
+			literal = literal + char 
+			if ord(char) in range(32,127) or ord(char) in [9,10,32]:
+				state = 19
+			elif char == '"':
+				listaTokens.append(('LITERAL',literal))
+				literal = ''
+				state = 0
+			if len(literal) > 250:
 				retract()
 				print('linha','coluna')
+				literal = ''
 				state = 0
+		elif state == 20: #NAO TERMINOU AINDA
+			char = getNextChar()
+			identifier = identifier + char
+			if letra.match(char):
+				state = 20
+			elif numero.match(char):
+				state = 20
+			elif ord(char) in [9,10,32]:
+				listaTokens.append(('ID',identifier))
+				identifier = ''
+				state = 22
+		
 else:
 	print('ARQUIVO INVALIDO')
