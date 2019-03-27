@@ -1,10 +1,2 @@
-a=0;
-ENQUANTO a < 10
-INICIO
-b <- a.
-a <- a+1.
-FIM
-PARA a DE 0 ATEH 9
-INICIO
-b <- a.
-FIM
+a+1
+$#@
