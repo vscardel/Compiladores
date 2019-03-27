@@ -242,7 +242,7 @@ if buff:
 				if len(literal) > 512:
 					retract()
 					ERRO = 1
-					print(linha,coluna-1)
+					print(linha,coluna-2) #pq GetNextChar conta as duas aspas
 					literal = ''
 					state = 0
 			elif state == 20:	#ID
@@ -273,7 +273,7 @@ if buff:
 					retract()
 					ERRO = 1
 					print(linha,coluna-1)
-					literal = ''
+					identifier = ''
 					state = 0
 			elif state == 21:	#NUMERO
 				char = getNextChar()
