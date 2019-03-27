@@ -52,11 +52,16 @@ def read_input():
 		return buff
 
 def getNextChar():
-	global InputPointer,buff,coluna
+	global InputPointer,buff,coluna,ERRO
 	InputPointer = InputPointer + 1
 	if InputPointer == len(buff): 
 		if literal:
-			listaTokens.append(('LITERAL',literal))
+			if literal[len(literal)-1] == '"':
+				LITERAL = literal[:-1]
+				listaTokens.append(('LITERAL',LITERAL))
+			else:
+				print(linha,coluna-1)
+				ERRO = 1
 		elif identifier:
 			if identifier in keywords:
 				listaTokens.append((identifier,identifier))
