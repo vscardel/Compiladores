@@ -54,7 +54,16 @@ def read_input():
 def getNextChar():
 	global InputPointer,buff,coluna
 	InputPointer = InputPointer + 1
-	if InputPointer == len(buff):
+	if InputPointer == len(buff): 
+		if literal:
+			listaTokens.append(('LITERAL',literal))
+		elif identifier:
+			if identifier in keywords:
+				listaTokens.append((identifier,identifier))
+			else:
+				listaTokens.append(('ID',identifier))
+		elif number:
+				listaTokens.append(('NUM',number))
 		raise EndOfBuff
 	else:
 		coluna = coluna + 1
@@ -65,6 +74,13 @@ def retract():
 	global InputPointer,coluna
 	coluna = coluna - 1
 	InputPointer = InputPointer - 1
+
+def checa_linha(char):
+	global linha,coluna
+	if ord(char) == 10:
+		linha = linha + 1
+		coluna = 1
+
 
 buff = read_input()
 
@@ -122,6 +138,7 @@ if buff:
 					number = number + char
 				elif ord(char) in [9,10,32]:
 					state = 22
+					checa_linha(char)
 				else:
 					print(linha,coluna-1)
 					ERRO = 1
@@ -146,6 +163,7 @@ if buff:
 					listaTokens.append(('POT','**'))
 					state = 0
 				elif char in [9,10,32]:
+					checa_linha(char)
 					listaTokens.append(('MUL','*'))
 					state = 22
 				else:
@@ -187,6 +205,9 @@ if buff:
 				if char == '=':
 					listaTokens.append(('GE','>='))
 					state = 0
+				elif char in [9,10,32]:
+					state = 22
+					checa_linha()
 				else:
 					listaTokens.append(('GR','>'))
 					retract()
@@ -194,29 +215,30 @@ if buff:
 			elif state == 18: #LESS
 				char = getNextChar()
 				if char == '-':
-					listaTokens.append(('ATT','<-'))
+					listaTokens.append(('ATR','<-'))
 					state = 0
 				elif char == '=':
 					listaTokens.append(('LE','<='))
 					state = 0
 				elif char == '>':
-					listaTokens.append('DIFF','<>')
+					listaTokens.append(('DIFF','<>'))
 					state = 0
 				elif char in [9,10,32]:
 					state = 22
+					checa_linha(char)
 				else:
-					listaTokens.append('LT','<')
+					listaTokens.append(('LT','<'))
 					retract()
 					state = 0
 			elif state == 19:	#LITERAL
 				char = getNextChar()
-				if (ord(char) in range(32,127)) or (ord(char) in [9,10,32]):
-					literal = literal + char 
-					state = 19
-				elif char == '"':
+				if char == '"':
 					listaTokens.append(('LITERAL',literal))
 					literal = ''
 					state = 0
+				elif (ord(char) in range(32,127)) or (ord(char) in [9,10,32]):
+					literal = literal + char 
+					state = 19
 				if len(literal) > 512:
 					retract()
 					ERRO = 1
@@ -238,6 +260,7 @@ if buff:
 						listaTokens.append(('ID',identifier))
 					identifier = ''
 					state = 22
+					checa_linha(char)
 				else:
 					retract()
 					if identifier in keywords:
@@ -265,6 +288,7 @@ if buff:
 					listaTokens.append(('NUM',number))
 					number = ''
 					state = 22
+					checa_linha(char)
 				elif letra.match(char):
 					retract()
 					ERRO = 1
@@ -285,9 +309,6 @@ if buff:
 			elif state == 22:	#ESPACO EM BRANCO
 				char = getNextChar()
 				if char in [9,10,32]:
-					if char == 10:
-						linha = linha + 1
-						coluna = 0
 					state = 22
 				else:
 					retract()
