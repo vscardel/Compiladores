@@ -108,6 +108,8 @@ if buff:
 				elif char == '-':
 					state = 5
 				elif char == '*':
+					if InputPointer == len(buff)-1:
+						listaTokens.append(('MUL','*'))
 					state = 6
 				elif char == '/':
 					state = 7
@@ -130,8 +132,12 @@ if buff:
 				elif char == '=':
 					state = 16
 				elif char == '>':
+					if InputPointer == len(buff)-1:
+						listaTokens.append(('GT','>'))
 					state = 17
 				elif char == '<':
+					if InputPointer == len(buff)-1:
+						listaTokens.append(('LT','<'))
 					state = 18
 				elif char == '"':
 					state = 19
@@ -338,6 +344,7 @@ if buff:
 		except EndOfBuff:
 			break
 
+	print(listaTokens)
 	if not ERRO:
 		print('OK')
 else:
