@@ -236,91 +236,97 @@ if buff:
 					retract()
 					state = 0
 			elif state == 19:	#LITERAL
-				char = getNextChar()
-				if char == '"':
-					listaTokens.append(('LITERAL',literal))
-					literal = ''
-					state = 0
-				elif (ord(char) in range(32,127)) or (ord(char) in [9,10,32]):
-					literal = literal + char 
-					state = 19
-
-				# if len(literal) > 512:
-				# 	print(linha,coluna) #pq GetNextChar conta as duas aspas
-				# 	retract()
-				# 	ERRO = 1
-				# 	literal = ''
-				# 	state = 0
-			elif state == 20:	#ID
-				char = getNextChar()
-				if letra.match(char):
-					identifier = identifier + char
-					state = 20
-				elif numero.match(char):
-					identifier = identifier + char
-					state = 20
-				elif ord(char) in [9,10,32]:
-					if identifier in keywords:
-						listaTokens.append((identifier,identifier))
-					else:
-						listaTokens.append(('ID',identifier))
-					identifier = ''
-					state = 22
-					checa_linha(char)
-				else:
-					retract()
-					if identifier in keywords:
-						listaTokens.append((identifier,identifier))
-					else:
-						listaTokens.append(('ID',identifier))
-					identifier = ''
-					state = 0
-				# if len(identifier) > 512:
-				# 	retract()
-				# 	ERRO = 1
-				# 	print(linha,coluna)
-				# 	identifier = ''
-				# 	state = 0
-			elif state == 21:	#NUMERO
-				char = getNextChar()
-				if numero.match(char):
-					number = number + char
-					state = 21
-				elif char == ',':
-					if not flag_virgula:
-						flag_virgula = 1
-						number = number + char
-						state = 21
-					else:
+				if len(literal) > 512:
 						retract()
+						print(linha,coluna)
+						ERRO = 1
+						literal = ''
 						state = 0
-				elif char in [9,10,32]:
-					number = number[:-1]
-					listaTokens.append(('NUM',number))
-					number = ''
-					state = 22
-					checa_linha(char)
-					flag_virgula = 0
-				elif letra.match(char):
+				else:
+					char = getNextChar()
+					if char == '"':
+						listaTokens.append(('LITERAL',literal))
+						literal = ''
+						state = 0
+					elif (ord(char) in range(32,127)) or (ord(char) in [9,10,32]):
+						literal = literal + char 
+						state = 19
+
+			elif state == 20:	#ID
+				if len(identifier) > 512:
 					retract()
 					ERRO = 1
 					print(linha,coluna)
+					identifier = ''
+					state = 0
+				else:
+					char = getNextChar()
+					if letra.match(char):
+						identifier = identifier + char
+						state = 20
+					elif numero.match(char):
+						identifier = identifier + char
+						state = 20
+					elif ord(char) in [9,10,32]:
+						if identifier in keywords:
+							listaTokens.append((identifier,identifier))
+						else:
+							listaTokens.append(('ID',identifier))
+						identifier = ''
+						state = 22
+						checa_linha(char)
+					else:
+						retract()
+						if identifier in keywords:
+							listaTokens.append((identifier,identifier))
+						else:
+							listaTokens.append(('ID',identifier))
+						identifier = ''
+						state = 0
+			elif state == 21:	#NUMERO
+				if len(number) > 512:
+					retract()
+					print(linha,coluna)
+					ERRO = 1
 					number = ''
 					state = 0
 					flag_virgula = 0
 				else:
-					retract()
-					listaTokens.append(('NUM',number))
-					number = ''
-					state = 0
-					flag_virgula = 0
-				# if len(number) > 512:
-				# 	print(linha,coluna)
-				# 	retract()
-				# 	ERRO = 1
-				# 	number = ''
-				# 	state = 0
-				# 	flag_virgula = 0
+					char = getNextChar()
+					if numero.match(char):
+						number = number + char
+						state = 21
+					elif char == ',':
+						if not flag_virgula:
+							flag_virgula = 1
+							number = number + char
+							state = 21
+						else:
+							print(linha,coluna-1)
+							ERRO = 1
+							number = ''
+							flag_virgula = 0
+							state = 0
+					elif char in [9,10,32]:
+						number = number[:-1]
+						listaTokens.append(('NUM',number))
+						number = ''
+						state = 22
+						checa_linha(char)
+						flag_virgula = 0
+					elif letra.match(char):
+						retract()
+						ERRO = 1
+						print(linha,coluna)
+						number = ''
+						state = 0
+						flag_virgula = 0
+					else:
+						retract()
+						listaTokens.append(('NUM',number))
+						number = ''
+						state = 0
+						flag_virgula = 0
 			elif state == 22:	#ESPACO EM BRANCO
 				char = getNextChar()
 				if char in [9,10,32]:
@@ -334,6 +340,5 @@ if buff:
 
 	if not ERRO:
 		print('OK')
-		print(listaTokens)
 else:
 	print('ARQUIVO INVALIDO')
