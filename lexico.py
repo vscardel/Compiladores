@@ -98,39 +98,54 @@ if buff:
 			if state == 0:
 				char = getNextChar()
 				if char == '.':
-					state = 1
+					listaTokens.append(('PONT','.'))
+					state = 0
 				elif char == ';':
-					state = 2
+					listaTokens.append(('PONT_V',';'))
+					state = 0
 				elif char == ':':
-					state = 3
+					listaTokens.append(('D_PONT',':'))
+					state = 0
 				elif char == '+':
-					state = 4
+					listaTokens.append(('ADIC','+'))
+					state = 0
 				elif char == '-':
-					state = 5
+					listaTokens.append(('SUB','-'))
+					state = 0
 				elif char == '*':
 					if InputPointer == len(buff)-1:
 						listaTokens.append(('MUL','*'))
 					state = 6
 				elif char == '/':
-					state = 7
+					listaTokens.append(('DIV','/'))
+					state = 0
 				elif char == '%':
-					state = 8
+					listaTokens.append(('MOD','%'))
+					state = 0
 				elif char == '(':
-					state = 9
+					listaTokens.append(('LPAR','('))
+					state = 0
 				elif char == ')':
-					state = 10
+					listaTokens.append(('RPAR',')'))
+					state = 0
 				elif char == '[':
-					state = 11
+					listaTokens.append(('RBRAK','['))
+					state = 0
 				elif char == ']':
-					state = 12
+					listaTokens.append(('LBRAK',']'))
+					state = 0
 				elif char == '&':
-					state = 13
+					listaTokens.append(('AND','&'))
+					state = 0
 				elif char == '|':
-					state = 14
+					listaTokens.append(('OR','|'))
+					state = 0
 				elif char == '!':
-					state = 15
+					listaTokens.append(('NOT','!'))
+					state = 0
 				elif char == '=':
-					state = 16
+					listaTokens.append(('EQUAL','='))
+					state = 0
 				elif char == '>':
 					if InputPointer == len(buff)-1:
 						listaTokens.append(('GT','>'))
@@ -153,21 +168,7 @@ if buff:
 				else:
 					print(linha,coluna)
 					ERRO = 1
-			elif state == 1:
-				listaTokens.append(('PONT','.'))
-				state = 0
-			elif state == 2:
-				listaTokens.append(('PONT_V',';'))
-				state = 0
-			elif state == 3:
-				listaTokens.append(('D_PONT',':'))
-				state = 0
-			elif state == 4:
-				listaTokens.append(('ADIC','+'))
-				state = 0
-			elif state == 5:
-				listaTokens.append(('SUB','-'))
-				state = 0
+			
 			elif state == 6:
 				char = getNextChar()
 				if char == '*':
@@ -181,36 +182,6 @@ if buff:
 					listaTokens.append(('MUL','*'))
 					retract()
 					state = 0
-			elif state == 7:
-				listaTokens.append(('DIV','/'))
-				state = 0
-			elif state == 8:
-				listaTokens.append(('MOD','%'))
-				state = 0
-			elif state == 9:
-				listaTokens.append(('LPAR','('))
-				state = 0
-			elif state == 10:
-				listaTokens.append(('RPAR',')'))
-				state = 0
-			elif state == 11:
-				listaTokens.append(('RBRAK','['))
-				state = 0
-			elif state == 12:
-				listaTokens.append(('LBRAK',']'))
-				state = 0
-			elif state == 13:
-				listaTokens.append(('AND','&'))
-				state = 0
-			elif state == 14:
-				listaTokens.append(('OR','|'))
-				state = 0
-			elif state == 15:
-				listaTokens.append(('NOT','!'))
-				state = 0
-			elif state == 16:
-				listaTokens.append(('EQUAL','='))
-				state = 0
 			elif state == 17:
 				char = getNextChar()
 				if char == '=':
