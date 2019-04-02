@@ -60,7 +60,7 @@ def getNextChar():
 				LITERAL = literal[:-1]
 				listaTokens.append(('LITERAL',LITERAL))
 			else:
-				print(linha,coluna-1)
+				print(linha,coluna)
 				ERRO = 1
 		elif identifier:
 			if identifier in keywords:
@@ -96,7 +96,6 @@ if buff:
 
 		try:
 			if state == 0:
-				print('estado 0')
 				char = getNextChar()
 				if char == '.':
 					listaTokens.append(('PONT','.'))
@@ -171,7 +170,6 @@ if buff:
 					ERRO = 1
 			
 			elif state == 6:
-				print('estado 6')
 				char = getNextChar()
 				if char == '*':
 					listaTokens.append(('POT','**'))
@@ -185,7 +183,6 @@ if buff:
 					retract()
 					state = 0
 			elif state == 17:
-				print('estado 17')
 				char = getNextChar()
 				if char == '=':
 					listaTokens.append(('GE','>='))
@@ -198,7 +195,6 @@ if buff:
 					retract()
 					state = 0
 			elif state == 18: #LESS
-				print('estado 18')
 				char = getNextChar()
 				if char == '-':
 					listaTokens.append(('ATR','<-'))
@@ -217,7 +213,6 @@ if buff:
 					retract()
 					state = 0
 			elif state == 19:	#LITERAL
-				print('estado 19')
 				if len(literal) > 512:
 						retract()
 						print(linha,coluna)
@@ -235,7 +230,6 @@ if buff:
 						state = 19
 
 			elif state == 20:	#ID
-				print('estado 20')
 				if len(identifier) > 512:
 					retract()
 					ERRO = 1
@@ -267,7 +261,6 @@ if buff:
 						identifier = ''
 						state = 0
 			elif state == 21:	#NUMERO
-				print('estado 21')
 				if len(number) > 512:
 					retract()
 					print(linha,coluna)
@@ -313,7 +306,6 @@ if buff:
 						state = 0
 						flag_virgula = 0
 			elif state == 22:	#ESPACO EM BRANCO
-				print('estado 22')
 				char = getNextChar()
 				if ord(char) in [9,10,32]:
 					if ord(char) == 10:
