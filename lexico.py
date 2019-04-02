@@ -226,6 +226,8 @@ if buff:
 						literal = ''
 						state = 0
 					elif (ord(char) in range(32,127)) or (ord(char) in [9,10,32]):
+						if ord(char) == 10:
+							checa_linha(char)
 						literal = literal + char 
 						state = 19
 
