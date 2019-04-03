@@ -155,6 +155,9 @@ if buff:
 						listaTokens.append(('LT','<'))
 					state = 18
 				elif char == '"':
+					if InputPointer == len(buff)-1:
+						print(linha,coluna)
+						ERRO = 1
 					state = 19
 				elif letra.match(char):
 					state = 20
