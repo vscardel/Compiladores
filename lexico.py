@@ -177,10 +177,6 @@ if buff:
 				if char == '*':
 					listaTokens.append(('POT','**'))
 					state = 0
-				elif char in [9,10,32]:
-					checa_linha(char)
-					listaTokens.append(('MUL','*'))
-					state = 22
 				else:
 					listaTokens.append(('MUL','*'))
 					retract()
@@ -190,9 +186,6 @@ if buff:
 				if char == '=':
 					listaTokens.append(('GE','>='))
 					state = 0
-				elif char in [9,10,32]:
-					state = 22
-					checa_linha()
 				else:
 					listaTokens.append(('GR','>'))
 					retract()
@@ -208,9 +201,6 @@ if buff:
 				elif char == '>':
 					listaTokens.append(('DIFF','<>'))
 					state = 0
-				elif char in [9,10,32]:
-					state = 22
-					checa_linha(char)
 				else:
 					listaTokens.append(('LT','<'))
 					retract()
@@ -249,14 +239,6 @@ if buff:
 					elif numero.match(char):
 						identifier = identifier + char
 						state = 20
-					elif ord(char) in [9,10,32]:
-						if identifier in keywords:
-							listaTokens.append((identifier,identifier))
-						else:
-							listaTokens.append(('ID',identifier))
-						identifier = ''
-						state = 22
-						checa_linha(char)
 					else:
 						retract()
 						if identifier in keywords:
@@ -290,13 +272,6 @@ if buff:
 							number = ''
 							flag_virgula = 0
 							state = 0
-					elif char in [9,10,32]:
-						number = number[:-1]
-						listaTokens.append(('NUM',number))
-						number = ''
-						state = 22
-						checa_linha(char)
-						flag_virgula = 0
 					elif letra.match(char):
 						retract()
 						ERRO = 1
@@ -322,7 +297,7 @@ if buff:
 
 		except EndOfBuff:
 			break
-
+			
 	if not ERRO:
 		print('OK')
 else:
