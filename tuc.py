@@ -1,5 +1,5 @@
 import re
-import sys
+from sys import stdin
 
 class EndOfBuff(Exception):
 	pass
@@ -24,27 +24,22 @@ numero = re.compile(n)
 
 listaTokens = []
 
-
 def read_input():
 
 	buff = ''
 	erro = 0
+	
+	for line in stdin:
 
-	while True:
-		try:
-			s = raw_input()
+		for char in line:
+			if (ord(char) not in range(32,127) 
+			and ord(char) not in range(9,11)):
+				erro = 1
 
-			for char in s:
-				if (ord(char) not in range(32,127) 
-				and ord(char) not in range(9,11)):
-					erro = 1
-					raise EOFError
+			if erro:
+				break
 
-			buff += s + '\n'
-		except EOFError:
-			break
-
-	buff = buff[:-1]
+		buff += line
 
 	if erro:
 		return 0
@@ -93,7 +88,7 @@ def checa_linha(char):
 buff = read_input()
 
 if buff:
-	state,ERRO,flag_virgula,linha_enter,coluna_enter = 0,0,0,0,0
+	state,ERRO,flag_virgula,flag_enter = 0,0,0,0
 
 	while True:
 
@@ -209,30 +204,28 @@ if buff:
 					retract()
 					state = 0
 			elif state == 19:	#LITERAL
-
 				if len(literal) > 512:
-					retract()
-					print linha_enter,coluna_enter
-					linha_enter,coluna_enter = 0,0
-					ERRO = 1
-					literal = ''
-					state = 0
+						retract()
+						print linha,coluna
+						ERRO = 1
+						literal = ''
+						state = 0
 				else:
 					char = getNextChar()
-
 					if char == '"':
 						listaTokens.append(('LITERAL',literal))
 						literal = ''
 						state = 0
 					else:
 						literal = literal + char 
-						if len(literal) > 512:
-							state = 19
+						if ord(char) == 10:
+							flag_enter = 1
 						else:
-							linha_enter,coluna_enter = linha,coluna
-							if ord(char) == 10:
+							if flag_enter:
 								checa_linha(char)
-							state = 19
+								flag_enter = 0
+
+						state = 19
 
 			elif state == 20:	#ID
 				if len(identifier) > 512:
