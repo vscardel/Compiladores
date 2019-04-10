@@ -27,27 +27,22 @@ listaTokens = []
 
 def read_input():
 
+	global ERRO
+
 	buff = ''
 	erro = 0
 
-	while True:
-		try:
-			s = raw_input()
+	for line in sys.stdin:
 
-			for char in s:
-				if (ord(char) not in range(32,127) 
-				and ord(char) not in range(9,11)):
-					erro = 1
-					raise EOFError
+		for char in line:
+			if (ord(char) not in range(32,127) 
+			and ord(char) not in range(9,11)):
+				erro = 1
 
-			buff += s + '\n'
-		except EOFError:
-			break
-
-	buff = buff[:-1]
-
+		buff = buff + line
+		
 	if erro:
-		return 0
+		pass
 	else:
 		return buff
 
@@ -59,11 +54,11 @@ def getNextChar():
 			if literal[len(literal)-1] == '"':
 				LITERAL = literal[:-1]
 				listaTokens.append(('LITERAL',LITERAL))
+			elif literal[len(literal)-1] == '\n':
+				print linha_enter,coluna_enter
+				ERRO = 1
 			else:
-				if coluna == 0:
-					print linha,coluna+1
-				else:
-					print linha,coluna
+				print linha,coluna
 				ERRO = 1
 		elif identifier:
 			if identifier in keywords:
@@ -310,6 +305,9 @@ if buff:
 
 	#sdfsdfsdfsdfdsf
 	if not ERRO:
+		print listaTokens
 		print 'OK'
+elif buff == '':
+	print('OK')
 else:
 	print 'ARQUIVO INVALIDO'
