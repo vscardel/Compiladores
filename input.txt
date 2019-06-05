@@ -1,1 +1,3 @@
-"aaa"
+bla bla bla bla
+123 "string literal puta que o pariu"
+* a ** b a + b
