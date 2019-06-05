@@ -1,20 +1,33 @@
-#copiar o outer html do body da tabela do slr 
+#copiar o outer html do body da tabela do slr
+#script q transforma  o html da tabela em uma lista de listas
 
 from bs4 import BeautifulSoup
 import csv
 soup = BeautifulSoup(open('tabela.html'), 'html.parser')
 lista_linhas = soup.find_all('tr')
 
-f = open('tabela.csv','w')
-writer = csv.writer(f, delimiter=";")
+f = open('tabela.txt','w')
 
-for linha in lista_linhas:
+f.write("[")
+for cont2,linha in enumerate(lista_linhas):
 	celulas = linha.find_all('td')
-	lista_escreve = []
-	for celula in celulas:
+	f.write('[ ')
+	for cont,celula in enumerate(celulas):
+		if cont == 0:
+			continue
 		aux = celula.get_text()
 		if aux == u'\xa0':
-			lista_escreve.append('v')
+			if cont != len(celulas)-1:
+				f.write('"v",')
+			else:
+				f.write('"v"')
 		else:
-			lista_escreve.append(aux)
-	writer.writerow(lista_escreve)
+			if cont != len(celulas)-1: 
+				f.write('"'+ aux + '"' + ',')
+			else:
+				f.write('"' + aux +'"')
+	if cont2 != len(lista_linhas)-1:
+		f.write("],")
+	else:
+		f.write("]")
+f.write("]")
