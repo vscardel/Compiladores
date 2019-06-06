@@ -5,8 +5,22 @@ from bs4 import BeautifulSoup
 import csv
 soup = BeautifulSoup(open('tabela.html'), 'html.parser')
 lista_linhas = soup.find_all('tr')
+head = soup.find_all('p')
 
 f = open('tabela.txt','w')
+
+#monta o dicionario
+f.write('{')
+for head in head:
+	tokens = head.find_all('th')
+	for cont3,token in enumerate(tokens):
+		if cont3 != len(tokens)-1:
+			f.write("'" + token.get_text() + "':"+str(cont3)+',')
+		else:
+			f.write("'" + token.get_text() + "':"+str(cont3))
+f.write('}')
+f.write('\n')	
+
 
 f.write("[")
 for cont2,linha in enumerate(lista_linhas):
