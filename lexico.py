@@ -84,21 +84,6 @@ def checa_linha(char):
 		linha = linha + 1
 		coluna = 0
 
-#tabela precisa ser copiada e colada diretamente no txt do js machine
-def tabelaSlr():
-	tabela = []
-	with open('tabela.csv','r') as f:
-		for line in f:
-			linha = line.split(';')
-			for num,cel in enumerate(linha):
-				if cel == 'v':
-					linha[num] = ''
-			linha.pop(0)
-			linha.pop(len(linha)-1)
-			tabela.append(linha)
-	return tabela
-
-
 buff = read_input()
 
 if buff:
@@ -126,7 +111,7 @@ if buff:
 					state = 0
 				elif char == '*':
 					if InputPointer == len(buff)-1:
-						listaTokens.append(('MUL','*'))
+						listaTokens.append(('*','*'))
 					state = 6
 				elif char == '/':
 					listaTokens.append(('/','/'))
