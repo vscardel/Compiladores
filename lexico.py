@@ -321,6 +321,3 @@ pont_lista_tokens = 0
 
 pilha = []
 
-
-
-
