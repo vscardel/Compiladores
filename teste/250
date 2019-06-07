@@ -1,0 +1,2 @@
+[('FUNCAO', 'FUNCAO'), ('ID', 'x'), ('(', '('), (')', ')'), (':', ':'), ('REAL', 'REAL'), ('.', '.'), ('VAR', 'VAR'), ('INTEIRO', 'INTEIRO'), (':', ':'), ('ID', 'd'), ('.', '.'), ('INICIO', 'INICIO'), ('SE', 'SE'), ('NUM', '4'), ('%', '%'), ('NUM', '6'), ('>=', '>='), ('-', '-'), ('NUM', '149336124794234783595,3'), ('INICIO', 'INICIO'), ('FIM', 'FIM'), ('SENAO', 'SENAO'), ('INICIO', 'INICIO'), ('FIM', 'FIM'), ('LEIA', 'LEIA'), ('ID', 'a'), ('.', '.'), ('RECEBA', 'RECEBA'), ('(', '('), ('NUM', '5'), (')', ')'), ('.', '.'), ('FIM', 'FIM')]
+NO
