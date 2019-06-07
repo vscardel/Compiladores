@@ -1,13 +1,16 @@
 S -> DeclVar PF VAR DeclVar INICIO Stat FIM
+
 Tipo -> INTEIRO
 Tipo -> REAL
 TipoFuncao -> INTEIRO
 TipoFuncao -> REAL
 TipoFuncao -> NULO
+
 VetOuN -> VET
-VetOuN -> "
+VetOuN -> ''
 min -> -
-min -> "
+min -> ''
+
 ListaId -> ID ; ListaId
 ListaId -> ID .
 ListaLeitura -> ID ; ListaLeitura
@@ -15,7 +18,7 @@ ListaLeitura -> ID [ ExprArit ] ; ListaLeitura
 ListaLeitura -> ID .
 ListaLeitura -> ID [ ExprArit ] . 
 ListaVarAntes -> ListaVar
-ListaVarAntes -> "
+ListaVarAntes -> ''
 ListaVar ->  VetOuN Tipo : ID ; ListaVar
 ListaVar -> VetOuN Tipo : ID
 ListaFunc -> ID ; ListaFunc
@@ -24,10 +27,12 @@ ListaEscreve -> ExprArit ; ListaEscreve
 ListaEscreve -> LITERAL ; ListaEscreve
 ListaEscreve -> ExprArit .
 ListaEscreve -> LITERAL .
+
 DeclVar -> DeclNorm
 DeclVar -> DeclVet
 DeclNorm -> Tipo : ListaId
 DeclVet -> VET Tipo : ID NUM .
+
 ExprArit -> Nivel1
 Nivel1 -> Nivel1 + Nivel2
 Nivel1 -> Nivel1 - Nivel2
@@ -43,8 +48,10 @@ Nivel4 -> min ID
 nivel4 -> min chamadaFunc
 nivel4 -> min NUM
 nivel4 -> min ID [ ExprArit ]
+
 Atrib -> ID <- ExprArit .
 Atrib -> ID [ ExprArit ] <- ExprArit .
+
 ExpRel -> ExprArit > ExprArit
 ExpRel -> ExprArit < ExprArit
 ExpRel -> ExprArit <= ExprArit
@@ -60,8 +67,10 @@ Nivell3 -> ( ExpRelC )
 Nivell3 -> ! ( ExpRelC )
 Nivell3 -> ExpRel
 Nivell3 -> ! ExpRel
+
 Leitura -> LEIA ListaLeitura
 Escrita -> ESCREVA ListaEscreve
+
 Stat -> Leitura Stat
 Stat -> DesvioCondicional Stat
 Stat -> RepeticaoEnquanto Stat
@@ -72,13 +81,15 @@ Stat -> ChamadaFunc Stat
 Stat -> PARE . Stat
 Stat -> RECEBA . Stat
 Stat -> RECEBA ( ExprArit ) . 
-Stat -> "
+Stat -> ''
+
 DesvioCondicional -> SE ExpRelC INICIO Stat FIM
 DesvioCondicional -> Se ExpRelC INICIO Stat FIM SENAO INICIO Stat FIM 
 RepeticaoEnquanto -> ENQUANTO ExpRelC INICIO Stat FIM
 RepeticaoPara -> PARA ID DE ExprArit ATEH ExprArit INICIO Stat FIM
+
 PF -> FUNCAO ID ( ListaVarAntes ) : TipoFuncao . PF
 PF -> GeraFunc
-GeraFunc -> "
+GeraFunc -> ''
 GeraFunc -> FUNCAO ID ( ListaVarAntes ) : TipoFuncao VAR DeclVar INICIO Stat FIM GeraFunc
 ChamadaFunc -> ID ( ListaFunc ) . 
