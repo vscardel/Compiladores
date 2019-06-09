@@ -42,7 +42,7 @@ Nivel4 -> ID
 Nivel4 -> ID ( ListaFuncAntes ) 
 Nivel4 -> NUM
 Nivel4 -> ID [ ExprArit ]
-Nivel4 -> ( ExprArit )
+Nivel4 -> - ( ExprArit )
 Nivel4 -> - ID
 Nivel4 -> - ID ( ListaFuncAntes ) 
 Nivel4 -> - NUM
