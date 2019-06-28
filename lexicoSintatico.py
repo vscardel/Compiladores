@@ -1,5 +1,6 @@
 import re
 import sys
+sys.setrecursionlimit(10000000)
 
 class EndOfBuff(Exception):
 	pass
@@ -305,9 +306,16 @@ if buff:
 elif buff == '':
 	print('YES')
 else:
-	print 'ARQUIVO INVALIDO'
+	print ('YES')
 
 #########PARSER###########
+
+class Tree:
+	def __init__(self,value):
+		self.value = value
+		self.list_of_childs = []
+
+raiz = Tree(('',''))		
 
 listaTokens.append('$')
 
@@ -323,6 +331,8 @@ pont_lista_tokens = 0
 
 pilha = []
 
+pilha_arvore = []
+
 pilha.append(('',0))
 
 while True:
@@ -332,6 +342,10 @@ while True:
 	col_a = dic[tok_a]
 	pos_t = tabela[est_a][col_a]
 	if pos_t == 'acc':
+		for num in range(len(pilha_arvore)-1):
+			x = pilha_arvore[len(pilha_arvore)-1]
+			raiz.list_of_childs.insert(0,x)
+			pilha_arvore.pop(len(pilha_arvore)-1)
 		print('YES')
 		break
 	elif pos_t == 'v':
@@ -341,15 +355,22 @@ while True:
 		aux = pos_t.split('s')
 		est_s = int(aux[1])
 		pilha.append((tok_a,est_s))
+		x = Tree((tok_a,est_s))
+		pilha_arvore.append(x)
 	elif pos_t[0] == 'r':
 		aux = pos_t.split('r')
 		regra_gram = gramatica[int(aux[1])]
 		num = len(regra_gram.split('->')[1][1:].split())
 		alfa = regra_gram.split('->')[0][:-1]
+		no = Tree((alfa,''))
 		for i in range(num):
+			x = pilha_arvore[len(pilha_arvore)-1]
+			no.list_of_childs.insert(0,x)
 			pilha.pop(len(pilha)-1)
+			pilha_arvore.pop(len(pilha_arvore)-1)
 		prox_estado = pilha[len(pilha)-1][1]
 		prox_pilha = (alfa,int(tabela[prox_estado][dic[alfa]]))
 		pilha.append(prox_pilha)
+		pilha_arvore.append(no)
 		continue
 	pont_lista_tokens = pont_lista_tokens + 1
