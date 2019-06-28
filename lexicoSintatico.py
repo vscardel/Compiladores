@@ -312,8 +312,16 @@ else:
 
 class Tree:
 	def __init__(self,value):
+		self.pai = None
 		self.value = value
 		self.list_of_childs = []
+
+def printTree(no):
+	print(no.value)
+	if not no.list_of_childs:
+		return
+	for i in no.list_of_childs:
+		printTree(i)
 
 raiz = Tree(('',''))		
 
@@ -344,12 +352,11 @@ while True:
 	if pos_t == 'acc':
 		for num in range(len(pilha_arvore)-1):
 			x = pilha_arvore[len(pilha_arvore)-1]
+			x.pai = raiz
 			raiz.list_of_childs.insert(0,x)
 			pilha_arvore.pop(len(pilha_arvore)-1)
-		print('YES')
 		break
 	elif pos_t == 'v':
-		print('NO')
 		break
 	elif pos_t[0] == 's':
 		aux = pos_t.split('s')
@@ -365,6 +372,7 @@ while True:
 		no = Tree((alfa,''))
 		for i in range(num):
 			x = pilha_arvore[len(pilha_arvore)-1]
+			x.pai = no
 			no.list_of_childs.insert(0,x)
 			pilha.pop(len(pilha)-1)
 			pilha_arvore.pop(len(pilha_arvore)-1)
@@ -374,3 +382,38 @@ while True:
 		pilha_arvore.append(no)
 		continue
 	pont_lista_tokens = pont_lista_tokens + 1
+
+#########SEMANTICO###########
+
+erros_semanticos = [0,0,0,0,0]
+tabela_simbolos = {}
+
+def Semantico(no):
+	global tabela_simbolos,erros_semanticos
+	if no.value[0] == 'PF': #achei um prototipo de cuncao
+		for c in no.list_of_childs:
+			if c.value[0] == 'ID':
+				tabela_simbolos[c.value[1]] = ['FUNCAO']
+				break
+	if no.value[0] == 'ID': #achei uma id
+		index = 0
+		for cont,c in enumerate(no.pai.list_of_childs): #procuro a posicao da id na lista de filhos
+			if c.value[0] == 'ID' and c.value[1] == no.value[1]:
+				index = cont
+				break
+		if no.pai.list_of_childs[index+1][1] == '(': #se achei parenteses eh pq eh chamada de funcao
+			if no.value[1] in tabela_simbolos:
+				if tabela_simbolos[no.value][1] == 'FUNCAO': #redeclarou funcao
+					erros_semanticos[0] = 1 #erro de numero 1 identicado
+	if not no.list_of_childs:
+		return
+	for i in no.list_of_childs:
+		Semantico(i)
+
+Semantico(raiz)
+
+for e in erros_semanticos:
+	if e == 1:
+		print('YES')
+	else:
+		print('NO')
