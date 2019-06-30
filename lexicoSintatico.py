@@ -312,7 +312,6 @@ else:
 
 class Tree:
 	def __init__(self,value):
-		self.pai = None
 		self.value = value
 		self.list_of_childs = []
 
@@ -322,9 +321,7 @@ def printTree(no):
 		return
 	for i in no.list_of_childs:
 		printTree(i)
-
-raiz = Tree(('',''))		
-
+	
 listaTokens.append('$')
 
 dic = {'VAR':0,'INICIO':1,'FIM':2,'INTEIRO':3,'REAL':4,'NULO':5,'ID':6,';':7,'[':8,']':9,'.':10,'VET':11,':':12,'LITERAL':13,'NUM':14,'+':15,'-':16,'*':17,'/':18,'%':19,'**':20,'(':21,')':22,'<-':23,'>':24,'<':25,'<=':26,'>=':27,'=':28,'<>':29,'|':30,'&':31,'!':32,'LEIA':33,'ESCREVA':34,'PARE':35,'RECEBA':36,'SE':37,'SENAO':38,'ENQUANTO':39,'PARA':40,'DE':41,'ATEH':42,'FUNCAO':43,'$':44,'S':45,'Tipo':46,'TipoFuncao':47,'ListaId':48,'ListaLeitura':49,'ListaVarAntes':50,'ListaVar':51,'ListaFuncAntes':52,'ListaFunc':53,'ListaEscreve':54,'DeclVar':55,'ExprArit':56,'Nivel1':57,'Nivel2':58,'Nivel3':59,'Nivel4':60,'Atrib':61,'ExpRel':62,'ExpRelC':63,'Nivell1':64,'Nivell2':65,'Nivell3':66,'Leitura':67,'Escrita':68,'Stat':69,'DesvioCondicional':70,'RepeticaoEnquanto':71,'RepeticaoPara':72,'PF':73,'GeraFunc':74,'ChamadaFunc':75}
@@ -343,6 +340,8 @@ pilha_arvore = []
 
 pilha.append(('',0))
 
+raiz = Tree(('',''))	
+
 while True:
 	pos_p = len(pilha)-1
 	est_a = pilha[pos_p][1]
@@ -352,7 +351,6 @@ while True:
 	if pos_t == 'acc':
 		for num in range(len(pilha_arvore)-1):
 			x = pilha_arvore[len(pilha_arvore)-1]
-			x.pai = raiz
 			raiz.list_of_childs.insert(0,x)
 			pilha_arvore.pop(len(pilha_arvore)-1)
 		break
@@ -362,7 +360,8 @@ while True:
 		aux = pos_t.split('s')
 		est_s = int(aux[1])
 		pilha.append((tok_a,est_s))
-		x = Tree((tok_a,est_s))
+		valor_no = listaTokens[pont_lista_tokens][1]
+		x = Tree((tok_a,valor_no))
 		pilha_arvore.append(x)
 	elif pos_t[0] == 'r':
 		aux = pos_t.split('r')
@@ -372,7 +371,6 @@ while True:
 		no = Tree((alfa,''))
 		for i in range(num):
 			x = pilha_arvore[len(pilha_arvore)-1]
-			x.pai = no
 			no.list_of_childs.insert(0,x)
 			pilha.pop(len(pilha)-1)
 			pilha_arvore.pop(len(pilha_arvore)-1)
@@ -386,31 +384,61 @@ while True:
 #########SEMANTICO###########
 
 erros_semanticos = [0,0,0,0,0]
-tabela_simbolos = {}
+tabela_simbolos = []
 
-def Semantico(no):
-	global tabela_simbolos,erros_semanticos
-	if no.value[0] == 'PF': #achei um prototipo de cuncao
+def semantico(no):
+	classe_no = no.value[0]
+	valor_no = no.value[1]
+
+	if classe_no == 'PF':	#acha uma declaracao de funcao
 		for c in no.list_of_childs:
 			if c.value[0] == 'ID':
-				tabela_simbolos[c.value[1]] = ['FUNCAO']
-				break
-	if no.value[0] == 'ID': #achei uma id
-		index = 0
-		for cont,c in enumerate(no.pai.list_of_childs): #procuro a posicao da id na lista de filhos
-			if c.value[0] == 'ID' and c.value[1] == no.value[1]:
-				index = cont
-				break
-		if no.pai.list_of_childs[index+1][1] == '(': #se achei parenteses eh pq eh chamada de funcao
-			if no.value[1] in tabela_simbolos:
-				if tabela_simbolos[no.value][1] == 'FUNCAO': #redeclarou funcao
-					erros_semanticos[0] = 1 #erro de numero 1 identicado
+				nome_funcao = c.value[1]
+				l = [nome_funcao,'FUNCAO']
+				if len(tabela_simbolos) == 0:
+					tabela_simbolos.append(l)
+				else:
+					for s in tabela_simbolos:
+						if s[0] == nome_funcao:
+							erros_semanticos[2] = 1
+						else:
+							tabela_simbolos.append(l)
+							break
+	#duas possibilidades para declaracao de funcao: no stat ou no chamadaFunc
+	elif classe_no == 'Nivel4': #caso stat
+		str_cmp = ''
+		nome_funcao = ''
+		for c in no.list_of_childs:
+			if c.value[0] == 'ID':
+				nome_funcao = c.value[1]
+				str_cmp = str_cmp + 'ID'
+			else:
+				str_cmp = str_cmp + str(c.value[1])
+		if str_cmp == 'ID()' or str_cmp == '-ID()': #achei uma chamada de funcao
+			flag = 0
+			for s in tabela_simbolos:	#erro de funcao nao declarada
+				if s[0] == nome_funcao and s[1] == 'FUNCAO':
+					flag = 1 #declarei a funcai
+			if not flag:
+				erros_semanticos[0] = 1
+	elif classe_no == 'ChamadaFunc': #caso chamadaFunc
+		nome_funcao = ''
+		for c in no.list_of_childs:
+			if c.value[0] == 'ID':
+				nome_funcao = c.value[1]
+				flag = 0
+				for s in tabela_simbolos:	#erro de funcao nao declarada
+					if s[0] == nome_funcao and s[1] == 'FUNCAO':
+						flag = 1
+				if not flag:
+					erros_semanticos[0] = 1
+
 	if not no.list_of_childs:
 		return
-	for i in no.list_of_childs:
-		Semantico(i)
+	for c in no.list_of_childs:
+		semantico(c)
 
-Semantico(raiz)
+semantico(raiz)
 
 for e in erros_semanticos:
 	if e == 1:

@@ -599,14 +599,12 @@ int estadoAtual;
 int colunaAtual;
 stack< pair<int,string> > pilha;
 pilha.push(make_pair(0,"inicio"));
+struct Arvore {
+  pair <string,string> dupla;
+  std::vector<struct Arvore> ;
+};
 
-stack< pair<string,string> > pilha2;
-
-vector < vector <pair <string, string > > > Arvore;
-vector <pair<string, string > > v;
-
-Arvore.push_back(v);
-Arvore[0].push_back(make_pair("raiz","raiz"));
+typedef stuct Arvore Arvore;
 
 //Arvore avr;
 //inicializou
@@ -619,15 +617,10 @@ colunaAtual = indices[TOKENS[percorreTokens].first];
 if (table[estadoAtual][colunaAtual]== " ") {
  cout<< "NO" << endl;
  acabou = true;
-  
 } 
 else if (table[estadoAtual][colunaAtual] == "acc") {
  cout<< "YES" << endl;
  acabou = true;
-    for(i=pilha2.size()-1;i>0;i++) {
-        Arvore[i].insert(Arvore.begin(),pilha2.top());
-        pilha2.pop();     
-    }
 }
 
 else if (table[estadoAtual][colunaAtual][0] == 's') {
@@ -635,7 +628,6 @@ else if (table[estadoAtual][colunaAtual][0] == 's') {
  aqui.erase(0,1);
  int next = atoi(aqui.c_str());
  pilha.push(make_pair(next,TOKENS[percorreTokens].first));
-    pilha2.push(TOKENS[percorreTokens]);
  percorreTokens++;
 
 }
@@ -672,23 +664,15 @@ else if (table[estadoAtual][colunaAtual][0] == 'r') {
  if(regra[0] !='\''){
   reducoes++;
  }
-    vector <pair<string,string> > node;
-
  for (i=0; i<reducoes; i++){
-      node.insert(node.begin(),pilha2.top());
   if (!pilha.empty()){
-   pilha.pop(); pilha2.pop();
+   pilha.pop();
   }
  }
  string foi = table[pilha.top().first][indices[raiz]];
  int go_to = atoi(foi.c_str());
  pilha.push(make_pair(go_to,raiz));
-    pilha2.push(node);
-}
-  for(i=0;i<Arvore.size()i++) {
-    cout << Arvore[i] <<endl;
-  }
+}  
 }
    
 }
-
