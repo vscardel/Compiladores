@@ -386,6 +386,73 @@ while True:
 erros_semanticos = [0,0,0,0,0]
 tabela_simbolos = []
 
+def conta_variaveis(listaId):
+	global tabela_simbolos
+	if len(listaId.list_of_childs) == 1:
+		l = [listaId.list_of_childs[0].value[1],'VARIAVEL']
+		if not tabela_simbolos:
+			tabela_simbolos.append(l)
+		else:
+			flag_erro = 0
+			for s in tabela_simbolos:
+				if s[0] == listaId.list_of_childs[0].value[1] and s[1] == 'VARIAVEL':
+					flag_erro = 1
+					erros_semanticos[3] = 1
+			if not flag_erro:
+				tabela_simbolos.append(l)
+		return
+	else:
+		for c in listaId.list_of_childs:
+			if c.value[0] == 'ID':
+				l = [listaId.list_of_childs[0].value[1],'VARIAVEL']
+				if not tabela_simbolos:
+					tabela_simbolos.append(l)
+				else:
+					flag_erro = 0
+					for s in tabela_simbolos:
+						if s[0] == listaId.list_of_childs[0].value[1] and s[1] == 'VARIAVEL':
+							flag_erro = 1
+							erros_semanticos[3] = 1
+					if not flag_erro:
+						tabela_simbolos.append(l)
+			elif c.value[0] == 'ListaId':
+				conta_variaveis(c)
+
+def conta_par_func(no):
+	global tabela_simbolos
+	if len(no.list_of_childs) == 3 or len(no.list_of_childs) == 4 :
+		for c in no.list_of_childs:
+			if c.value[0] == 'ID':
+				l = [c.value[1],'VARIAVEL']
+				if not tabela_simbolos:
+					tabela_simbolos.append(l)
+		else:
+			flag_erro = 0
+			for s in tabela_simbolos:
+				if s[0] == c.value[1] and s[1] == 'VARIAVEL':
+					flag_erro = 1
+					erros_semanticos[3] = 1
+			if not flag_erro:
+				tabela_simbolos.append(l)
+		return
+	else:
+		for c in listaId.list_of_childs:
+			if c.value[0] == 'ID':
+				l = [listaId.list_of_childs[0].value[1],'VARIAVEL']
+				if not tabela_simbolos:
+					tabela_simbolos.append(l)
+				else:
+					flag_erro = 0
+					for s in tabela_simbolos:
+						if s[0] == listaId.list_of_childs[0].value[1] and s[1] == 'VARIAVEL':
+							flag_erro = 1
+							erros_semanticos[3] = 1
+					if not flag_erro:
+						tabela_simbolos.append(l)
+			elif c.value[0] == 'ListaId':
+				conta_par_func(c)
+
+
 def semantico(no):
 	classe_no = no.value[0]
 	valor_no = no.value[1]
@@ -432,7 +499,48 @@ def semantico(no):
 						flag = 1
 				if not flag:
 					erros_semanticos[0] = 1
-
+	elif  classe_no == 'DeclVar':
+		for c in no.list_of_childs:
+			classe_filho = c.value[0]
+			if classe_filho == 'ListaId':
+				conta_variaveis(c)
+			elif classe_filho == 'ID':
+				l = [listaId.list_of_childs[0].value[1],'VARIAVEL']
+				if not tabela_simbolos:
+					tabela_simbolos.append(l)
+				else:
+					flag_erro = 0
+					for s in tabela_simbolos:
+						if s[0] == listaId.list_of_child[0].value[1] and s[1] == 'VARIAVEL':
+							flag_erro = 1
+							erros_semanticos[3] = 1
+					if not flag_erro:
+						tabela_simbolos.append(l)
+	#ou eh funcao ou variavel, com certeza ou foi declarada ou eh erro de uso de variavel n declarada
+	elif classe_no == 'ListaVar':
+		for c in no.list_of_childs:
+			classe_filho = c.value[0]
+			if classe_filho == 'ListaVar':
+				conta_par_func(c)
+			elif classe_filho == 'ID':
+				l = [c.value[1],'PAR_FUNC']
+				if not tabela_simbolos:
+					tabela_simbolos.append(l)
+				else:
+					flag_erro = 0
+					for s in tabela_simbolos:
+						if s[0] == c.value[1] and s[1] == 'PAR_FUNC':
+							flag_erro = 1
+					if not flag_erro:
+						tabela_simbolos.append(l)
+	elif classe_no == 'ID':
+		flag_erro = 0
+		for s in tabela_simbolos:
+			if s[0] == no.value[1] and s[1] == 'VARIAVEL':
+				print('oi')
+				flag_erro = 1
+		if not flag_erro:
+			erros_semanticos[1] = 1		
 	if not no.list_of_childs:
 		return
 	for c in no.list_of_childs:

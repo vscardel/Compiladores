@@ -1,8 +1,8 @@
 FUNCAO a(VET REAL:b): NULO.
 FUNCAO a(): INTEIRO.
 VAR
- INTEIRO: c.
- REAL: c.
+ INTEIRO: c; b; d.
+ REAL: e; f; b.
 INICIO
  c <- b().
 FIM
