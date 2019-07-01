@@ -436,15 +436,15 @@ def conta_par_func(no):
 				tabela_simbolos.append(l)
 		return
 	else:
-		for c in listaId.list_of_childs:
+		for c in no.list_of_childs:
 			if c.value[0] == 'ID':
-				l = [listaId.list_of_childs[0].value[1],'VARIAVEL']
+				l = [no.value[1],'VARIAVEL']
 				if not tabela_simbolos:
 					tabela_simbolos.append(l)
 				else:
 					flag_erro = 0
 					for s in tabela_simbolos:
-						if s[0] == listaId.list_of_childs[0].value[1] and s[1] == 'VARIAVEL':
+						if s[0] == no.value[1] and s[1] == 'VARIAVEL':
 							flag_erro = 1
 							erros_semanticos[3] = 1
 					if not flag_erro:
@@ -505,13 +505,13 @@ def semantico(no):
 			if classe_filho == 'ListaId':
 				conta_variaveis(c)
 			elif classe_filho == 'ID':
-				l = [listaId.list_of_childs[0].value[1],'VARIAVEL']
+				l = [no.value[1],'VARIAVEL']
 				if not tabela_simbolos:
 					tabela_simbolos.append(l)
 				else:
 					flag_erro = 0
 					for s in tabela_simbolos:
-						if s[0] == listaId.list_of_child[0].value[1] and s[1] == 'VARIAVEL':
+						if s[0] == no.value[1] and s[1] == 'VARIAVEL':
 							flag_erro = 1
 							erros_semanticos[3] = 1
 					if not flag_erro:
@@ -534,13 +534,24 @@ def semantico(no):
 					if not flag_erro:
 						tabela_simbolos.append(l)
 	elif classe_no == 'ID':
-		flag_erro = 0
+		flag = 0
 		for s in tabela_simbolos:
-			if s[0] == no.value[1] and s[1] == 'VARIAVEL':
-				print('oi')
-				flag_erro = 1
-		if not flag_erro:
-			erros_semanticos[1] = 1		
+			if s[0] == valor_no:
+				if s[1] == 'VARIAVEL':
+					flag = 1	#declarei
+					for q in tabela_simbolos:	#checa choque de nomes entre variaveis e funcao
+						if q[0] == valor_no and q[1] == 'FUNCAO':
+							erros_semanticos[4] = 1
+				elif s[1] == 'FUNCAO':
+					flag = 1	#n eh variavel
+				elif s[1] == 'PAR_FUNC':
+					flag = 1	#n eh_variavel
+
+
+		if not flag:
+			erros_semanticos[1] = 1
+
+
 	if not no.list_of_childs:
 		return
 	for c in no.list_of_childs:
