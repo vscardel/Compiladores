@@ -1,6 +1,0 @@
-FUNCAO a(VET REAL:a): NULO.
-VAR
- INTEIRO: a.
-INICIO
- a <- b.
-FIM
